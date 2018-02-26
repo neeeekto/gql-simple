@@ -15,5 +15,12 @@ module.exports = new Schema({
       required: Article.KEY,
     },
   ],
-  name: String,
+  name: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: Number,
+    required: true,
+  },
 });

@@ -1,13 +1,14 @@
-const {Schema} = require('mongoose')
-const {USER_KEY} = require('../User')
+const { Schema } = require('mongoose');
+const User = require('../User');
 module.exports = new Schema({
-  users: [{
-    type: Schema.Types.ObjectId,
-    ref: USER_KEY
-  }],
+  users: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: User.KEY,
+    },
+  ],
   text: {
     type: String,
-    required: true
+    required: true,
   },
-  
-})
+});
