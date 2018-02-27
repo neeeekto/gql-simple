@@ -1,4 +1,5 @@
-const { model } = require('mongoose');
+const mongoose = require('mongoose');
 const schema = require('./schema');
-module.exports.KEY = 'user';
-module.exports.UserORM = model(schema, module.exports.KEY);
+const KEY = 'user';
+module.exports.KEY = KEY;
+module.exports.UserORM = mongoose.model(KEY, schema);

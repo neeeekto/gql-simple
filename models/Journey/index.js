@@ -1,4 +1,4 @@
-const {model} = require('mongoose');
-const schema = require('./schema')
+const mongoose = require('mongoose');
+const schema = require('./schema');
 module.exports.KEY = 'journey';
-module.exports.JourneyORM = model(schema, module.exports.KEY);
+module.exports.JourneyORM = mongoose.model(module.exports.KEY, schema);
