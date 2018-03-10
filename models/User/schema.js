@@ -16,10 +16,6 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  hash: {
-    token: String,
-    expired: Date,
-  },
   role: String,
 });
 

@@ -3,7 +3,7 @@ const Article = require('../Article');
 const User = require('../User');
 
 module.exports = new Schema({
-  users: [
+  authors: [
     {
       type: Schema.Types.ObjectId,
       ref: Article.KEY,
@@ -19,8 +19,7 @@ module.exports = new Schema({
     type: String,
     required: true,
   },
-  year: {
-    type: Number,
-    required: true,
+  description: {
+    type: String,
   },
 });

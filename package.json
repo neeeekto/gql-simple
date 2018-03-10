@@ -13,6 +13,7 @@
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "helmet": "^3.11.0",
+    "express-graphql": "^0.6.12",
     "jade": "~1.11.0",
     "mongoose": "^5.0.7",
     "morgan": "~1.9.0",
