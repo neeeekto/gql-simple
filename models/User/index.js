@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 const schema = require('./schema');
+const GQLTypes = require('./graphql.model');
 const KEY = 'user';
-module.exports.KEY = KEY;
-module.exports.UserORM = mongoose.model(KEY, schema);
+
+const exp = {
+  GQLTypes,
+  UserORM: mongoose.model(KEY, schema),
+  KEY,
+};
+
+module.exports = exp;

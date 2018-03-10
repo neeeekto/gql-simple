@@ -1,8 +1,11 @@
-var express = require('express');
-const userRouter = require('./user');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-router.use('/user', userRouter);
+const { apiRoute } = require('./api.root');
+const { graphQlRoute } = require('./graphql.root');
+
+router.use('/api', apiRoute);
+router.use('/graphql', graphQlRoute);
 
 module.exports.setRoutes = (app) => {
   app.use(router);

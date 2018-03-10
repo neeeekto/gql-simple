@@ -1,4 +1,10 @@
 const mongoose = require('mongoose');
 const schema = require('./schema');
-module.exports.KEY = 'journey';
-module.exports.JourneyORM = mongoose.model(module.exports.KEY, schema);
+const GQLTypes = require('./graphql.model');
+const KEY = 'journey';
+
+module.exports = {
+  GQLTypes,
+  JourneyORM: mongoose.model(KEY, schema),
+  KEY,
+};

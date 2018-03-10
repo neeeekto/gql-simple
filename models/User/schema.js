@@ -1,6 +1,11 @@
 const { Schema } = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const roles = {
+  admin: 'admin',
+  user: 'user',
+};
+
 const schema = new Schema({
   name: {
     type: String,
@@ -16,8 +21,14 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  role: String,
+  role: {
+    type: String,
+    enum: Object.keys(roles),
+    default: roles.user,
+  },
 });
+
+schema.statics.roles = roles;
 
 schema.method('checkPassword', async function(candidate) {
   try {
@@ -29,7 +40,7 @@ schema.method('checkPassword', async function(candidate) {
 });
 
 schema.pre('save', async function(next) {
-  const user = this
+  const user = this;
   if (!this.isModified('password')) {
     return next();
   }
@@ -38,21 +49,13 @@ schema.pre('save', async function(next) {
   next();
 });
 
-
 schema.set('toJSON', {
   transform: (doc, ret, options) => {
     ret.id = ret._id;
     delete ret._id;
     delete ret.__v;
     delete ret.password;
-  }
+  },
 });
-
-schema.statics.roles = {
-  admin: 'admin',
-  user: 'user'
-};
-
-
 
 module.exports = schema;

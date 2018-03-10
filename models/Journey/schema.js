@@ -12,7 +12,7 @@ module.exports = new Schema({
   articles: [
     {
       type: Schema.Types.ObjectId,
-      required: Article.KEY,
+      ref: Article.KEY,
     },
   ],
   name: {
