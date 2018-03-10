@@ -1,8 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const route = express.Router();
+const { apiErrorHandler } = require('../middelware/apiError');
 
-const userRouter = require('./user');
+const { UserController } = require('./user');
 
-route.use('/user', userRouter);
+route.use('/user', UserController.api);
+
+route.use(apiErrorHandler);
 
 module.exports.apiRoute = route;

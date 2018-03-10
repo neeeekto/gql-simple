@@ -5,7 +5,7 @@ const User = require('../User');
 const Article = require('../Article');
 
 const JourneyGQLType = new graphql.GraphQLObjectType({
-  name: KEY.toUpperCase(),
+  name: 'Journey',
   description: 'Journey Type',
   fields: {
     authors: {

@@ -4,7 +4,7 @@ const schema = require('./schema');
 const User = require('../User');
 
 const ArticleGQLType = new graphql.GraphQLObjectType({
-  name: KEY.toUpperCase(),
+  name: 'Article',
   description: 'Article Type',
   fields: {
     authors: {
@@ -27,7 +27,9 @@ const ArticleGQLType = new graphql.GraphQLObjectType({
     },
     title: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
     text: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
-    permission: { type: new graphql.GraphQLNonNull(GQLTypes.RolesGQLEnum) },
+    permission: {
+      type: new graphql.GraphQLNonNull(User.GQLTypes.RolesGQLEnum),
+    },
   },
 });
 

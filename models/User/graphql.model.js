@@ -2,7 +2,7 @@ const graphql = require('graphql');
 const { KEY } = require('./index');
 const schema = require('./schema');
 
-const RolesGQLEnum = new GraphQLEnumType({
+const RolesGQLEnum = new graphql.GraphQLEnumType({
   name: 'Role',
   values: Object.keys(schema.statics.roles).reduce((res, key) => {
     res[key] = { value: key };
@@ -10,7 +10,7 @@ const RolesGQLEnum = new GraphQLEnumType({
   }, {}),
 });
 const UserGQLType = new graphql.GraphQLObjectType({
-  name: KEY.toUpperCase(),
+  name: 'User',
   description: 'User Type',
   fields: {
     id: {
