@@ -58,4 +58,5 @@ schema.set('toJSON', {
   },
 });
 
-module.exports = schema;
+module.exports.schema = schema;
+module.exports.roles = roles;

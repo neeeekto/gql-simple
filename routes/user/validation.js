@@ -10,6 +10,7 @@ const userValidation = () => {
       .string()
       .min(6)
       .required(),
+    role: joi.string().only(Object.keys(UserORM.schema.statics.roles)),
   });
   return createMiddlewateValidation(userSchema);
 };

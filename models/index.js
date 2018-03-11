@@ -1,9 +1,9 @@
-const { ArticleORM } = require('./Article');
-const { JourneyORM } = require('./Journey');
-const { UserORM } = require('./User');
+const Article = require('./Article');
+const Journey = require('./Journey');
+const User = require('./User');
 
 module.exports = {
-  ArticleORM,
-  JourneyORM,
-  UserORM,
+  Article,
+  Journey,
+  User,
 };

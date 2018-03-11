@@ -6,6 +6,4 @@ const { UserController } = require('./user');
 
 route.use('/user', UserController.api);
 
-route.use(apiErrorHandler);
-
 module.exports.apiRoute = route;

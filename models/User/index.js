@@ -5,7 +5,8 @@ const KEY = 'user';
 
 const exp = {
   GQLTypes,
-  UserORM: mongoose.model(KEY, schema),
+  UserORM: mongoose.model(KEY, schema.schema),
+  Roles: schema.roles,
   KEY,
 };
 

@@ -9,6 +9,8 @@ var bodyParser = require('body-parser');
 const passport = require('passport');
 const helmet = require('helmet');
 const cors = require('cors');
+const { apiErrorHandler } = require('./middelware/apiError');
+
 var { setRoutes } = require('./routes');
 
 var app = express();
