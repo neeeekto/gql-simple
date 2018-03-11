@@ -7,6 +7,12 @@ const ArticleGQLType = new graphql.GraphQLObjectType({
   name: 'Article',
   description: 'Article Type',
   fields: {
+    id: {
+      type: new graphql.GraphQLNonNull(graphql.GraphQLID),
+      resolve(obj) {
+        return obj._id;
+      },
+    },
     authors: {
       type: new graphql.GraphQLList(User.GQLTypes.UserGQLType),
       description: 'Article authors',
@@ -19,7 +25,7 @@ const ArticleGQLType = new graphql.GraphQLObjectType({
       },
     },
     moderator: {
-      type: new graphql.GraphQLList(User.GQLTypes.UserGQLType),
+      type: new graphql.GraphQLNonNull(User.GQLTypes.UserGQLType),
       description: 'Article moderator',
       resolve(article) {
         return User.UserORM.findById(article.moderator);

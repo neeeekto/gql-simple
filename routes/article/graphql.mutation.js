@@ -1,30 +1,51 @@
 const graphql = require('graphql');
-const { UserORM, GQLTypes } = require('../../models/User');
+const User = require('../../models/User');
+const Article = require('../../models/Article');
+const validation = require('./validation');
 
 module.exports.mutation = {
-  createUser: {
-    type: GQLTypes.UserGQLType,
+  createArticle: {
+    type: Article.GQLTypes.ArticleGQLType,
     args: {
-      name: {
-        name: 'User name',
+      title: {
+        name: 'title',
         type: new graphql.GraphQLNonNull(graphql.GraphQLString),
       },
-      login: {
-        name: 'User login',
+      text: {
+        name: 'text',
         type: new graphql.GraphQLNonNull(graphql.GraphQLString),
       },
-      password: {
-        name: 'User password',
+      permission: {
+        name: 'permission',
+        type: new graphql.GraphQLNonNull(User.GQLTypes.RolesGQLEnum),
+      },
+      moderator: {
+        name: 'moderator',
         type: new graphql.GraphQLNonNull(graphql.GraphQLString),
+      },
+      authors: {
+        name: 'authors',
+        type: new graphql.GraphQLList(
+          new graphql.GraphQLNonNull(graphql.GraphQLString),
+        ),
       },
     },
-    async resolve(_, { name, login, password }) {
-      const user = new UserORM({ name, login, password });
-      return await user.save();
+    async resolve(_, { title, text, permission, moderator, authors }) {
+      await validation.articleAuthorsValidator(authors);
+      await validation.articleModeratorValidator(moderator);
+      console.log(title, text, permission, moderator, authors)
+      const article = new Article.ArticleORM({
+        title,
+        text,
+        permission,
+        moderator,
+        authors,
+      });
+      return await article.save();
     },
   },
-  deleteUser: {
-    type: GQLTypes.UserGQLType,
+  deleteArticle: {
+    type: Article.GQLTypes.ArticleGQLType,
     args: {
       id: {
         name: 'id',
@@ -32,31 +53,35 @@ module.exports.mutation = {
       },
     },
     async resolve(_, { id }) {
-      return await UserORM.findByIdAndRemove(id).exec();
+      return await Article.ArticleORM.findByIdAndRemove(id).exec();
     },
   },
-  updateUser: {
-    type: GQLTypes.UserGQLType,
+  updateArticle: {
+    type: Article.GQLTypes.ArticleGQLType,
     args: {
-      name: {
-        name: 'id',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLString),
-      },
-      name: {
-        name: 'name',
+      title: {
+        name: 'title',
         type: graphql.GraphQLString,
       },
-      login: {
-        name: 'login',
+      text: {
+        name: 'text',
         type: graphql.GraphQLString,
       },
-      password: {
-        name: 'password',
+      permission: {
+        name: 'permission',
+        type: User.GQLTypes.RolesGQLEnum,
+      },
+      moderator: {
+        name: 'moderator',
         type: graphql.GraphQLString,
+      },
+      authors: {
+        name: 'authors',
+        type: new graphql.GraphQLList(graphql.GraphQLString),
       },
     },
     async resolve(_, params) {
-      await UserORM.update(
+      await Article.ArticleORM.update(
         {
           _id: params.id,
         },

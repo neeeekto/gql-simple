@@ -1,4 +1,4 @@
-const { ApiError } = require('../../lib/errors');
+const { ApiError, ErrorBase } = require('../../lib/errors');
 const { createMiddlewateValidation } = require('../../lib/validation.utils');
 const { UserORM, Roles } = require('../../models/User');
 const joi = require('joi');
@@ -17,34 +17,59 @@ const articleBaseValidation = () => {
   return createMiddlewateValidation(schema);
 };
 
-const articleAuthorsValidation = () => async (req, res, next) => {
-  const { authors } = req.body;
-  const users = await UserORM.find({ $in: { _id: authors } }).exec();
-  if (user.length === 0 || user.length !== authors.length) {
-    return next(
-      new ApiError(
-        `User not exist: ${authors.filter(
-          (el) => users.indexOf((u) => u._id === el) === -1,
-        )}`,
-        400,
-      ),
+const articleAuthorsValidator = async (authors) => {
+  const users = await UserORM.find({ _id: { $in: authors } }).exec();
+  if (users.length === 0 || users.length !== authors.length) {
+    throw new ErrorBase(
+      `User not exist: ${authors.filter(
+        (el) => users.indexOf((u) => u._id === el) === -1,
+      )}`,
+      'VError',
     );
   }
-  next();
 };
 
-const articleModeratorValidation = () => async (req, res, next) => {
-  const { moderator } = req.body;
-  const users = await UserORM.findById(moderator);
+const articleAuthorsVMW = async (req, res, next) => {
+  const { authors } = req.body;
+  try {
+    await articleAuthorsValidator(authors);
+    next();
+  } catch (error) {
+    if (error.name === 'VError') {
+      return next(new ApiError(error.name, 400));
+    } else {
+      return next(error);
+    }
+  }
+};
+
+const articleModeratorValidator = async (moderatorId) => {
+  const users = await UserORM.findById(moderatorId);
   if (!users) {
-    return next(new ApiError(`User not exist: ${moderator}`, 400));
+    throw new ErrorBase(`User not exist: ${moderatorId}`, 'VError');
   }
   if (users.role !== Roles.admin) {
-    return next(new ApiError(`User is not admin: ${moderator}`, 400));
+    throw new ErrorBase(`User is not admin: ${moderatorId}`, 'VError');
+  }
+};
+
+const articleModeratorVMW = () => async (req, res, next) => {
+  const { moderator } = req.body;
+  try {
+    await articleModeratorValidator(moderator);
+    next();
+  } catch (error) {
+    if (error.name === 'VError') {
+      return next(new ApiError(error.name, 400));
+    } else {
+      return next(error);
+    }
   }
   next();
 };
 
-module.exports.articleBaseValidation = articleBaseValidation;
-module.exports.articleAuthorsValidation = articleAuthorsValidation;
-module.exports.articleModeratorValidation = articleModeratorValidation;
+module.exports.articleBaseVM = articleBaseValidation;
+module.exports.articleAuthorsValidator = articleAuthorsValidator;
+module.exports.articleModeratorValidator = articleModeratorValidator;
+module.exports.articleAuthorsVMW = articleAuthorsVMW;
+module.exports.articleModeratorVMW = articleModeratorVMW;

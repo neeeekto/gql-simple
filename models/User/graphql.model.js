@@ -1,10 +1,10 @@
 const graphql = require('graphql');
 const { KEY } = require('./index');
-const schema = require('./schema');
+const { schema, roles } = require('./schema');
 
 const RolesGQLEnum = new graphql.GraphQLEnumType({
   name: 'Role',
-  values: Object.keys(schema.statics.roles).reduce((res, key) => {
+  values: Object.keys(roles).reduce((res, key) => {
     res[key] = { value: key };
     return res;
   }, {}),

@@ -10,7 +10,7 @@ module.exports = new Schema({
   moderator: {
     type: Schema.Types.ObjectId,
     ref: User.KEY,
-    required: true
+    required: true,
   },
   title: {
     type: String,
@@ -23,6 +23,6 @@ module.exports = new Schema({
   permission: {
     type: String,
     required: true,
-    enum: Object.keys(User.UserORM.schema.statics),
+    enum: Object.keys(User.Roles),
   },
 });

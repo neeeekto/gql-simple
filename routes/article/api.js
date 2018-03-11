@@ -1,19 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { Article } = require('../../models');
+const { Article, User } = require('../../models');
 const validation = require('./validation');
 const { checkIDMiddelware } = require('../../middelware/checkId');
 
 const { ArticleORM } = Article;
-/* GET users listing. */
 router.get('/', async (req, res, next) => {
-  const data = await ArticleORM.find();
+  const data = await ArticleORM.find()
+    .populate('moderator')
+    .populate('authors');
   res.json(data);
 });
 
 router.get('/:id', checkIDMiddelware, async (req, res, next) => {
   try {
-    const article = await ArticleORM.findById(String(req.params.id));
+    const article = await ArticleORM.findById(String(req.params.id))
+      .populate('moderator')
+      .populate('authors');
     if (!article) {
       return next(new ApiError('Not found', 404));
     }
@@ -25,13 +28,13 @@ router.get('/:id', checkIDMiddelware, async (req, res, next) => {
 
 router.post(
   '/',
-  validation.articleBaseValidation,
-  validation.articleAuthorsValidation,
-  validation.articleModeratorValidation,
+  validation.articleBaseVM(),
+  validation.articleAuthorsVMW,
+  validation.articleModeratorVMW,
   async (req, res, next) => {
     try {
       const data = req.body;
-      let newModel = new ArticleORM(user);
+      let newModel = new ArticleORM(data);
       newModel = await newModel.save();
       res.json(newModel);
     } catch (error) {
@@ -52,10 +55,9 @@ router.delete('/:id', checkIDMiddelware, async (req, res, next) => {
 router.put(
   '/:id',
   checkIDMiddelware,
-  validation.articleBaseValidation,
-  validation.articleAuthorsValidation,
-  validation.articleModeratorValidation,
-  validation.userValidation(),
+  validation.articleBaseVM(),
+  validation.articleAuthorsVMW,
+  validation.articleModeratorVMW,
   async (req, res, next) => {
     try {
       const newData = req.body;

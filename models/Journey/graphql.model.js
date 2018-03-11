@@ -8,6 +8,12 @@ const JourneyGQLType = new graphql.GraphQLObjectType({
   name: 'Journey',
   description: 'Journey Type',
   fields: {
+    id: {
+      type: new graphql.GraphQLNonNull(graphql.GraphQLID),
+      resolve(obj) {
+        return obj._id;
+      },
+    },
     authors: {
       type: new graphql.GraphQLList(User.GQLTypes.UserGQLType),
       description: 'Journey authors',

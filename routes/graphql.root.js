@@ -4,6 +4,7 @@ const graphql = require('graphql');
 const router = express.Router();
 
 const { UserController } = require('./user');
+const { ArticleController } = require('./article');
 
 router.use(
   '/',
@@ -19,12 +20,14 @@ router.use(
             },
           },
           user: UserController.gql.query,
+          article: ArticleController.gql.query,
         },
       }),
       mutation: new graphql.GraphQLObjectType({
         name: 'RootMutation',
         fields: {
           ...UserController.gql.mutation,
+          ...ArticleController.gql.mutation,
         },
       }),
     }),

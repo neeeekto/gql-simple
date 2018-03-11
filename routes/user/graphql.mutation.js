@@ -17,9 +17,13 @@ module.exports.mutation = {
         name: 'User password',
         type: new graphql.GraphQLNonNull(graphql.GraphQLString),
       },
+      role: {
+        name: 'role',
+        type: GQLTypes.RolesGQLEnum,
+      },
     },
     async resolve(_, { name, login, password }) {
-      const user = new UserORM({ name, login, password });
+      const user = new UserORM({ name, login, password, role });
       return await user.save();
     },
   },
@@ -38,9 +42,9 @@ module.exports.mutation = {
   updateUser: {
     type: GQLTypes.UserGQLType,
     args: {
-      name: {
+      id: {
         name: 'id',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLString),
+        type: graphql.GraphQLString,
       },
       name: {
         name: 'name',
@@ -54,18 +58,13 @@ module.exports.mutation = {
         name: 'password',
         type: graphql.GraphQLString,
       },
+      role: {
+        name: 'role',
+        type: GQLTypes.RolesGQLEnum,
+      },
     },
     async resolve(_, params) {
-      await UserORM.update(
-        {
-          _id: params.id,
-        },
-        {
-          $set: {
-            ...params,
-          },
-        },
-      );
+      return await UserORM.findByIdAndUpdate(params.id, params);
     },
   },
 };
