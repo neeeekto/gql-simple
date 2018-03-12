@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../models');
+const { User, Article, Journey } = require('../../models');
 const { UserORM } = User;
 const { ApiError } = require('../../lib/errors');
 const { checkIDMiddelware } = require('../../middelware/checkId');
@@ -42,6 +42,32 @@ router.post(
 
 router.delete('/:id', checkIDMiddelware, async (req, res, next) => {
   try {
+    const articles = await Article.ArticleORM.find({
+      $or: [{ moderator: req.params.id }, { authors: req.params.id }],
+    }).exec();
+    if (articles.length) {
+      return next(
+        new ApiError(
+          `The user has a link to article(s) [${articles.join(
+            ',',
+          )}], delete the articles`,
+          400,
+        ),
+      );
+    }
+    const journey = await Journey.JourneyORM.find({
+      authors: req.params.id,
+    }).exec();
+    if (journey.length) {
+      return next(
+        new ApiError(
+          `The user has a link to journey(s) [${journey.join(
+            ',',
+          )}], delete the journeys`,
+          400,
+        ),
+      );
+    }
     await UserORM.findByIdAndRemove(req.params.id);
     res.json();
   } catch (error) {

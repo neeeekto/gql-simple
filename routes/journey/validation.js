@@ -1,23 +1,24 @@
 const { ApiError, ErrorBase } = require('../../lib/errors');
 const { createMiddlewateValidation } = require('../../lib/validation.utils');
 const { UserORM, Roles } = require('../../models/User');
+const { ArticleORM } = require('../../models/Article');
 const joi = require('joi');
 
-const articleBaseValidation = () => {
-  const schema = joi.object({
-    title: joi.string().required(),
-    text: joi.string().required(),
-    permission: joi.string().only(Object.keys(Roles)),
-    moderator: joi.string().required(),
-    authors: joi
-      .array()
-      .items(joi.string().min(24))
-      .min(1),
-  });
-  return createMiddlewateValidation(schema);
-};
+const schema = joi.object({
+  description: joi.string(),
+  name: joi.string().required(),
+  authors: joi
+    .array()
+    .items(joi.string().min(24))
+    .min(1),
+  articles: joi
+    .array()
+    .items(joi.string().min(24))
+    .min(1),
+});
+const journeyBaseVMW = createMiddlewateValidation(schema);
 
-const articleAuthorsValidator = async (authors) => {
+const journeyAuthorsValidator = async (authors) => {
   const users = await UserORM.find({ _id: { $in: authors } }).exec();
   if (users.length === 0 || users.length !== authors.length) {
     throw new ErrorBase(
@@ -29,10 +30,10 @@ const articleAuthorsValidator = async (authors) => {
   }
 };
 
-const articleAuthorsVMW = async (req, res, next) => {
+const journeyAuthorsVMW = async (req, res, next) => {
   const { authors } = req.body;
   try {
-    await articleAuthorsValidator(authors);
+    await journeyAuthorsValidator(authors);
     next();
   } catch (error) {
     if (error.name === 'VError') {
@@ -43,20 +44,22 @@ const articleAuthorsVMW = async (req, res, next) => {
   }
 };
 
-const articleModeratorValidator = async (moderatorId) => {
-  const users = await UserORM.findById(moderatorId);
-  if (!users) {
-    throw new ErrorBase(`User not exist: ${moderatorId}`, 'VError');
-  }
-  if (users.role !== Roles.admin) {
-    throw new ErrorBase(`User is not admin: ${moderatorId}`, 'VError');
+const journeyArticlesValidator = async (articles) => {
+  const articleList = await ArticleORM.find({ _id: { $in: articles } }).exec();
+  if (articleList.length === 0 || articleList.length !== articleList.length) {
+    throw new ErrorBase(
+      `Article not exist: ${authors.filter(
+        (el) => articleList.indexOf((a) => a._id === el) === -1,
+      )}`,
+      'VError',
+    );
   }
 };
 
-const articleModeratorVMW = () => async (req, res, next) => {
+const journeyArticlesVMW = () => async (req, res, next) => {
   const { moderator } = req.body;
   try {
-    await articleModeratorValidator(moderator);
+    await journeyArticlesValidator(moderator);
     next();
   } catch (error) {
     if (error.name === 'VError') {
@@ -68,8 +71,8 @@ const articleModeratorVMW = () => async (req, res, next) => {
   next();
 };
 
-module.exports.articleBaseVM = articleBaseValidation;
-module.exports.articleAuthorsValidator = articleAuthorsValidator;
-module.exports.articleModeratorValidator = articleModeratorValidator;
-module.exports.articleAuthorsVMW = articleAuthorsVMW;
-module.exports.articleModeratorVMW = articleModeratorVMW;
+module.exports.journeyBaseVMW = journeyBaseVMW;
+module.exports.journeyAuthorsValidator = journeyAuthorsValidator;
+module.exports.journeyAuthorsVMW = journeyAuthorsVMW;
+module.exports.journeyArticlesValidator = journeyArticlesValidator;
+module.exports.journeyArticlesVMW = journeyArticlesVMW;

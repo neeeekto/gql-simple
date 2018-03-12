@@ -22,7 +22,7 @@ module.exports.mutation = {
         type: GQLTypes.RolesGQLEnum,
       },
     },
-    async resolve(_, { name, login, password }) {
+    async resolve(_, { name, login, password, role }) {
       const user = new UserORM({ name, login, password, role });
       return await user.save();
     },

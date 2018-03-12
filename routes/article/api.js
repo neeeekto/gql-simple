@@ -28,7 +28,7 @@ router.get('/:id', checkIDMiddelware, async (req, res, next) => {
 
 router.post(
   '/',
-  validation.articleBaseVM(),
+  validation.articleBaseVMW(),
   validation.articleAuthorsVMW,
   validation.articleModeratorVMW,
   async (req, res, next) => {
@@ -55,7 +55,7 @@ router.delete('/:id', checkIDMiddelware, async (req, res, next) => {
 router.put(
   '/:id',
   checkIDMiddelware,
-  validation.articleBaseVM(),
+  validation.articleBaseVMW(),
   validation.articleAuthorsVMW,
   validation.articleModeratorVMW,
   async (req, res, next) => {

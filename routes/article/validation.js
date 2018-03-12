@@ -3,7 +3,7 @@ const { createMiddlewateValidation } = require('../../lib/validation.utils');
 const { UserORM, Roles } = require('../../models/User');
 const joi = require('joi');
 
-const articleBaseValidation = () => {
+const articleBaseVMW = () => {
   const schema = joi.object({
     title: joi.string().required(),
     text: joi.string().required(),
@@ -68,7 +68,7 @@ const articleModeratorVMW = () => async (req, res, next) => {
   next();
 };
 
-module.exports.articleBaseVM = articleBaseValidation;
+module.exports.articleBaseVMW = articleBaseVMW;
 module.exports.articleAuthorsValidator = articleAuthorsValidator;
 module.exports.articleModeratorValidator = articleModeratorValidator;
 module.exports.articleAuthorsVMW = articleAuthorsVMW;

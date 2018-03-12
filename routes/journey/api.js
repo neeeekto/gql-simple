@@ -26,16 +26,22 @@ router.get('/:id', checkIDMiddelware, async (req, res, next) => {
   }
 });
 
-router.post('/', async (req, res, next) => {
-  try {
-    const data = req.body;
-    let newModel = new JourneyORM(data);
-    newModel = await newModel.save();
-    res.json(newModel);
-  } catch (error) {
-    next(error);
-  }
-});
+router.post(
+  '/',
+  validation.journeyBaseVMW,
+  validation.journeyAuthorsVMW,
+  validation.journeyArticlesVMW,
+  async (req, res, next) => {
+    try {
+      const data = req.body;
+      let newModel = new JourneyORM(data);
+      newModel = await newModel.save();
+      res.json(newModel);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 router.delete('/:id', checkIDMiddelware, async (req, res, next) => {
   try {
@@ -46,16 +52,23 @@ router.delete('/:id', checkIDMiddelware, async (req, res, next) => {
   }
 });
 
-router.put('/:id', checkIDMiddelware, async (req, res, next) => {
-  try {
-    const newData = req.body;
-    const journey = await JourneyORM.findById(req.params.id);
-    Object.assign(journey, newData);
-    await journey.save();
-    return res.json(journey);
-  } catch (error) {
-    next(error);
-  }
-});
+router.put(
+  '/:id',
+  validation.journeyBaseVMW,
+  validation.journeyAuthorsVMW,
+  validation.journeyArticlesVMW,
+  checkIDMiddelware,
+  async (req, res, next) => {
+    try {
+      const newData = req.body;
+      const journey = await JourneyORM.findById(req.params.id);
+      Object.assign(journey, newData);
+      await journey.save();
+      return res.json(journey);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 module.exports = router;
