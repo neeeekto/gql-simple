@@ -7,7 +7,7 @@ module.exports.apiErrorHandler = function(err, req, res, next) {
       code = err.apiCode;
     }
   }
-  console.log('Error');
+  console.log('Error', err);
   res.status(code).json({
     success: false,
     error: {

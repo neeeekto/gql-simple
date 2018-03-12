@@ -11,16 +11,7 @@ const userValidation = () => {
       .min(6)
       .required(),
     role: joi.string().only(Object.keys(UserORM.schema.statics.roles)),
-  });
-  return createMiddlewateValidation(userSchema);
-};
-
-const userPasswordValidation = (req, res, next) => {
-  const userSchema = joi.object({
-    password: joi
-      .string()
-      .min(6)
-      .required(),
+    password: joi.string().min(6),
   });
   return createMiddlewateValidation(userSchema);
 };
